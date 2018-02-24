@@ -612,21 +612,21 @@ class SaleOrderLine(models.Model):
       the actual price can only  depend on the  price_unit 
       DONT ASK WHY!!!!!
       13 FEB 2018 
-    """
 
-    """
     @api.onchange('price_unit','price_dumy','tax_id')
     def _onchange_discount(self):
-        self.discount =  ( self.price_unit -( self.price_dumy)/(1 + self.taxes) ) / self.price_unit
+       	print 'tax_id', self.tax_id
+        #self.discount =  ( self.price_unit -( self.price_dumy)/(1 + self.taxes) ) / self.price_unit
     """
 
-
     
-    @api.onchange('price_unit','price_dumy')
+    @api.onchange('price_unit','price_dumy', 'tax_id')
     def _onchange_discount1(self):
         if self.price_unit > 0:
            self.discount =  (1 - (self.price_dumy / self.price_unit) ) * 100
-    
+           if len(self.tax_id):
+               print self.tax_id[0].amount
+               self.discount =  ( self.price_unit - self.price_dumy/(1 + self.tax_id[0].amount/100) ) / self.price_unit*100
 
 
     @api.depends('price_unit','discount')
