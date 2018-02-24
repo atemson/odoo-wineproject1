@@ -239,16 +239,17 @@
 
                                             <field name="price_recommended"/>
                                             <field name="price_dumy" class="oe_inline"/>
+                                            
+                                            <field name="price_actual" />
+                                            
+
 
                                             <label for="discount" groups="sale.group_discount_per_so_line"/>
                                             <div name="discount" groups="sale.group_discount_per_so_line">
                                                 <field name="discount" class="oe_inline"/> %%
                                             </div>
-
                                             <field name="discount_value"  />
                                             <field name="price_unit"  />
-                                            <field name="price_actual" />
- 
                                            
                                         </group>
                                         <group>

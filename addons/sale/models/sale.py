@@ -614,16 +614,19 @@ class SaleOrderLine(models.Model):
       13 FEB 2018 
     """
 
-
-    @api.onchange('price_unit','price_actual')
+    """
+    @api.onchange('price_unit','price_dumy','tax_id')
     def _onchange_discount(self):
-        self.discount =  (1 - (self.price_actual / self.price_unit) ) * 100
+        self.discount =  ( self.price_unit -( self.price_dumy)/(1 + self.taxes) ) / self.price_unit
+    """
 
+
+    
     @api.onchange('price_unit','price_dumy')
     def _onchange_discount1(self):
         if self.price_unit > 0:
            self.discount =  (1 - (self.price_dumy / self.price_unit) ) * 100
-
+    
 
 
     @api.depends('price_unit','discount')
