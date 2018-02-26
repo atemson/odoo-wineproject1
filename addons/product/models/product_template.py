@@ -43,10 +43,14 @@ class ProductTemplate(models.Model):
         'Product Location', translate=True,
         help="A precise location where the Product is found, used only for internal information purposes.")
 
+    product_color = fields.Text(
+        'Product Colour', required=True,
+        help="The colour of a Product.")
+
 
     type = fields.Selection([
-        ('consu', _('Consumable')),
-        ('service', _('Service'))], string='Product Type', default='consu', required=True,
+        ('consu', _('Consumable')), ('stoc', _('Stockable Product')),
+        ('service', _('Service'))], string='Product Type', default='stoc', required=True,
         help='A stockable product is a product for which you manage stock. The "Inventory" app has to be installed.\n'
              'A consumable product, on the other hand, is a product for which stock is not managed.\n'
              'A service is a non-material product you provide.\n'
