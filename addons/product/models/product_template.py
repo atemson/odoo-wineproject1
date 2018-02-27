@@ -43,9 +43,21 @@ class ProductTemplate(models.Model):
         'Product Location', translate=True,
         help="A precise location where the Product is found, used only for internal information purposes.")
 
-    product_color = fields.Text(
-        'Product Colour', required=True,
-        help="The colour of a Product.")
+    product_color = fields.Selection([ ('white', _('White')),('red', _('Red')),('rose', _('Rose'))],
+        'Product Colour', required=True, default='white',
+        help="Select The colour of a Product(wine).")
+
+    product_vintage = fields.Integer(
+        'Vintage',
+        help="Vintage represents the year the wine was created.")
+
+    product_country = fields.Char(
+        'Country',
+        help="The Country where the wine is made, used only for internal information purposes.")
+
+    product_region = fields.Char(
+        'Region',
+        help="A Region  where the wine is made, used only for internal information purposes.")
 
 
     type = fields.Selection([
