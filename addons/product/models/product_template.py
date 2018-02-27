@@ -47,7 +47,7 @@ class ProductTemplate(models.Model):
         'Product Colour', required=True, default='white',
         help="Select The colour of a Product(wine).")
 
-    product_vintage = fields.Integer(
+    product_vintage = fields.Char(
         'Vintage',
         help="Vintage represents the year the wine was created.")
 
