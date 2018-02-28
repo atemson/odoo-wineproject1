@@ -69,12 +69,14 @@ class StockReportXls(ReportXlsx):
             available_qty = product.with_context({'warehouse': warehouse}).virtual_available + \
                             product.with_context({'warehouse': warehouse}).outgoing_qty - \
                             product.with_context({'warehouse': warehouse}).incoming_qty
-            value = available_qty * product.standard_price
+            #value = available_qty * product.standard_price
+            value = available_qty * product.lst_price
             vals = {
                 'sku': product.default_code,
                 'name': product.name,
                 'category': product.categ_id.name,
                 'cost_price': product.standard_price,
+                'sale_price': product.lst_price,
                 'available': available_qty,
                 'virtual': product.with_context({'warehouse': warehouse}).virtual_available,
                 'incoming': product.with_context({'warehouse': warehouse}).incoming_qty,
@@ -116,8 +118,9 @@ class StockReportXls(ReportXlsx):
         sheet.write(4, 0, 'SKU', format21)
         sheet.merge_range(4, 1, 4, 3, 'Name', format21)
         sheet.merge_range(4, 4, 4, 5, 'Category', format21)
-        sheet.write(4, 6, 'Cost Price', format21)
-        p_col_no1 = 7
+        sheet.write(4, 6, 'Sale Price', format21)
+        sheet.write(4, 7, 'Cost Price', format21)
+        p_col_no1 = 8
         for i in get_warehouse[0]:
             sheet.write(4, p_col_no1, 'Available', format21)
             sheet.write(4, p_col_no1 + 1, 'Virtual', format21)
@@ -136,11 +139,12 @@ class StockReportXls(ReportXlsx):
                 sheet.write(prod_row, prod_col, each['sku'], font_size_8)
                 sheet.merge_range(prod_row, prod_col + 1, prod_row, prod_col + 3, each['name'], font_size_8)
                 sheet.merge_range(prod_row, prod_col + 4, prod_row, prod_col + 5, each['category'], font_size_8)
-                sheet.write(prod_row, prod_col + 6, each['cost_price'], font_size_8)
+                sheet.write(prod_row, prod_col + 6, each['sale_price'], font_size_8)
+                sheet.write(prod_row, prod_col + 7, each['cost_price'], font_size_8)
                 prod_row = prod_row + 1
             break
         prod_row = 5
-        prod_col = 7
+        prod_col = 8
         for i in get_warehouse[1]:
             get_line = self.get_lines(data, i)
             for each in get_line:
