@@ -59,6 +59,11 @@ class ProductTemplate(models.Model):
         'Region',
         help="A Region  where the wine is made, used only for internal information purposes.")
 
+    product_grade = fields.Float(
+        'Grade',
+        help="The Score a wine has, used only for internal information purposes.")
+
+
 
     type = fields.Selection([
         ('consu', _('Consumable')), ('stoc', _('Stockable Product')),

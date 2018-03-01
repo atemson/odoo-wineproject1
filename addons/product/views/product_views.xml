@@ -46,6 +46,7 @@
                                     <field name="type"/>
                                     <field name="product_color"/>
                                     <field name="product_vintage"/>
+                                    <field name="product_grade"/>
                                     <field name="product_country"/>
                                     <field name="product_region"/>
                                     <field name="categ_id" string="Internal Category"/>
@@ -54,7 +55,7 @@
                                     <field name="list_price" widget='monetary' options="{'currency_field': 'currency_id'}"/>
                                     <label for="standard_price" groups="base.group_user"/>
                                     <div name="standard_price_uom" groups="base.group_user">
-                                        <field name="standard_price" widget='monetary' options="{'currency_field': 'currency_id'}" class="oe_inline"/>
+                                        <field name="standard_price" widget='monetary' options="{'currency_field': 'currency_id'}"/>
                                     </div>
                                     <field name="inventory_value" widget='monetary' options="{'currency_field': 'currency_id'}"/>
 
