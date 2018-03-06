@@ -619,6 +619,14 @@ class SaleOrderLine(models.Model):
         #self.discount =  ( self.price_unit -( self.price_dumy)/(1 + self.taxes) ) / self.price_unit
     """
 
+
+
+
+
+    @api.onchange('price_unit','discount')
+    def _onchange_price_dumy(self):
+        self.price_dumy =  self.price_unit * (1.0 - (self.discount or 0.0)/ 100.0) 
+
     
     @api.onchange('price_unit','price_dumy', 'tax_id')
     def _onchange_discount1(self):
@@ -798,7 +806,7 @@ class SaleOrderLine(models.Model):
 
     price_dumy = fields.Float('Sales Price', default=0.0, digits=dp.get_precision('Product Price'), required=True)
 
-   
+    total_qty = fields.Float(compute='_get_total_qty', digits=dp.get_precision('Product Price'), readonly=True, string='Total qty', default=0.0)
 
     price_reduce = fields.Monetary(compute='_get_price_reduce', string='Price Reduce', readonly=True, store=True)
     tax_id = fields.Many2many('account.tax', string='Taxes', domain=['|', ('active', '=', False), ('active', '=', True)])
@@ -1073,3 +1081,8 @@ class SaleOrderLine(models.Model):
             line.qty_available = line.product_id.qty_available
 
  
+    @api.depends('product_id')
+    def _get_total_qty(self):
+        for line in self:
+            line.total_qty  += line.product_id.product_uom_qty
+            print total_qty
