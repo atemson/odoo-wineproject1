@@ -806,7 +806,7 @@ class SaleOrderLine(models.Model):
 
     price_dumy = fields.Float('Sales Price', default=0.0, digits=dp.get_precision('Product Price'), required=True)
 
-    total_qty = fields.Float(compute='_get_total_qty', digits=dp.get_precision('Product Price'), readonly=True, string='Total qty', default=0.0)
+    #total_qty = fields.Float(compute='_get_total_qty', readonly=True, string='Total Quantity', default=0.0, digits=dp.get_precision('Product Unit of Measure'), track_visibility='always')
 
     price_reduce = fields.Monetary(compute='_get_price_reduce', string='Price Reduce', readonly=True, store=True)
     tax_id = fields.Many2many('account.tax', string='Taxes', domain=['|', ('active', '=', False), ('active', '=', True)])
@@ -1080,9 +1080,9 @@ class SaleOrderLine(models.Model):
         for line in self:
             line.qty_available = line.product_id.qty_available
 
- 
-    @api.depends('product_id')
+    """
+    @api.depends('product_uom_qty')
     def _get_total_qty(self):
         for line in self:
-            line.total_qty  += line.product_id.product_uom_qty
-            print total_qty
+            line.total_qty  += sum( line.product_uom_qty)
+    """

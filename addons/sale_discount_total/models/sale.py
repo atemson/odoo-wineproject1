@@ -4,15 +4,17 @@ import odoo.addons.decimal_precision as dp
 
 class SaleOrder(models.Model):
     _inherit = "sale.order"
-
     @api.depends('order_line.price_total')
     def _amount_all(self):
         """
         Compute the total amounts of the SO.
         """
+        global total_qty
+        total_qty = 0
         for order in self:
             amount_untaxed = amount_tax = amount_discount = 0.0
             for line in order.order_line:
+                total_qty += line.product_uom_qty
                 amount_untaxed += line.price_subtotal
                 amount_tax += line.price_tax
                 amount_discount += (line.product_uom_qty * line.price_unit * line.discount)/100
@@ -21,7 +23,19 @@ class SaleOrder(models.Model):
                 'amount_tax': order.pricelist_id.currency_id.round(amount_tax),
                 'amount_discount': order.pricelist_id.currency_id.round(amount_discount),
                 'amount_total': amount_untaxed + amount_tax,
+                'total_qty': total_qty  
             })
+
+    """
+    @api.depends('product_uom_qty')
+    def _get_total_qty(self):
+        global total_qty
+
+        for line in self:
+            line.total_qty += line.product_uom_qty
+    """
+
+
 
     discount_type = fields.Selection([('percent', 'Percentage'), ('amount', 'Amount')], string='Discount type',
                                      readonly=True,states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
@@ -36,6 +50,9 @@ class SaleOrder(models.Model):
                                    track_visibility='always')
     amount_discount = fields.Monetary(string='Discount', store=True, readonly=True, compute='_amount_all',
                                       digits_compute=dp.get_precision('Account'), track_visibility='always')
+
+    total_qty = fields.Float(string='Total Quantity Ordered', store=True, readonly=True, compute='_amount_all', digits=dp.get_precision('Product Unit of Measure'), 
+                                       track_visibility='always', help="The Total Quantity Ordered for the SO")
 
     @api.onchange('discount_type', 'discount_rate', 'order_line')
     def supply_rate(self):
@@ -53,6 +70,8 @@ class SaleOrder(models.Model):
                     discount = order.discount_rate
                 for line in order.order_line:
                     line.discount = discount
+
+
 
     @api.multi
     def _prepare_invoice(self,):
@@ -145,4 +164,6 @@ class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
 
     discount = fields.Float(string='Discount (%)', digits=(16, 4), default=0.0)
+
+
 
