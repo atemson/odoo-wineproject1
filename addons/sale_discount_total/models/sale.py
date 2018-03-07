@@ -23,25 +23,16 @@ class SaleOrder(models.Model):
                 'amount_tax': order.pricelist_id.currency_id.round(amount_tax),
                 'amount_discount': order.pricelist_id.currency_id.round(amount_discount),
                 'amount_total': amount_untaxed + amount_tax,
-                'total_qty': total_qty  
+                'total_qty': total_qty,
             })
 
-    """
-    @api.depends('product_uom_qty')
-    def _get_total_qty(self):
-        global total_qty
-
-        for line in self:
-            line.total_qty += line.product_uom_qty
-    """
-
-
+  
 
     discount_type = fields.Selection([('percent', 'Percentage'), ('amount', 'Amount')], string='Discount type',
-                                     readonly=True,states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
+                                     readonly=False, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
                                      default='percent', help="The global discount type (discount on all the products)")
     discount_rate = fields.Float('Discount Rate', digits_compute=dp.get_precision('Account'),  help="The global discount rate (discount rate on all the products)",
-                                 readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]})
+                                 readonly=False, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]})
     amount_untaxed = fields.Monetary(string='Untaxed Amount', store=True, readonly=True, compute='_amount_all',
                                      track_visibility='always')
     amount_tax = fields.Monetary(string='Taxes', store=True, readonly=True, compute='_amount_all',
