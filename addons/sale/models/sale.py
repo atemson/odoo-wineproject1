@@ -2,6 +2,13 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
+"""
+ Ben: real definition for prices
+ dummy price: gross price
+ actuall price: net price 
+ unit price: net recomment price
+"""
+
 from itertools import groupby
 from datetime import datetime, timedelta
 
@@ -623,10 +630,15 @@ class SaleOrderLine(models.Model):
 
 
 
-    @api.onchange('price_unit','discount')
+    @api.onchange('price_unit','discount','tax_id')
     def _onchange_price_dumy(self):
-        self.price_dumy =  self.price_unit * (1.0 - (self.discount or 0.0)/ 100.0) 
-
+        if self.price_unit > 0:
+           self.price_dumy =  self.price_unit * (1.0 - (self.discount or 0.0)/ 100.0) 
+        #  it should be same as previous value so that we don't need do anything, forget the following code: but good for 
+        #  understanding the meaning of the prices
+           if len(self.tax_id):
+               print self.tax_id[0].amount
+               self.price_dumy =  self.price_unit * (1.0 - (self.discount or 0.0)/ 100.0)*(1 + self.tax_id[0].amount/100) 
     
     @api.onchange('price_unit','price_dumy', 'tax_id')
     def _onchange_discount1(self):
@@ -635,7 +647,7 @@ class SaleOrderLine(models.Model):
            if len(self.tax_id):
                print self.tax_id[0].amount
                self.discount =  ( self.price_unit - self.price_dumy/(1 + self.tax_id[0].amount/100) ) / self.price_unit*100
-
+ 
 
     @api.depends('price_unit','discount')
     def _get_price_actual(self):
