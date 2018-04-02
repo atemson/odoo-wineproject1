@@ -19,7 +19,7 @@ test the features easily.
     'data': [
         'views/product_view.xml',
     ],
-    'demo': ['sale_expense_demo.xml'],
+    #'demo': ['sale_expense_demo.xml'],
     'test': [],
     'installable': True,
     'auto_install': True,

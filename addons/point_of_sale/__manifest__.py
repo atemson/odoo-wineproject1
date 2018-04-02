@@ -63,7 +63,7 @@ Main Features
         'views/point_of_sale_dashboard.xml',
     ],
     'demo': [
-        'data/point_of_sale_demo.xml',
+        #'data/point_of_sale_demo.xml',
     ],
     'installable': True,
     'application': True,
